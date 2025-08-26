@@ -1,0 +1,29 @@
+# Visual Studio
+.vs/
+.vs/VSWorkspaceState.json
+.vs/sln/
+.vs/sln.ide/
+
+# Binaries
+[Dd]ebug/
+[Rr]elease/
+**/[Bb]in/
+**/[Oo]bj/
+*.log
+*.pdb
+*.suo
+*.user
+*.bak
+*.vspscc
+*.vssscc
+
+# Test results
+TestResults/
+
+# Nuget
+.nuget/
+*.nupkg
+*.snupkg
+
+# NPM
+node_modules/
