@@ -22,6 +22,19 @@ namespace DynaPredictApi.Controllers
             return await _context.Machines.ToListAsync();
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Machine>> GetMachine(int id)
+        {
+            var machine = await _context.Machines.FindAsync(id);
+
+            if (machine == null)
+            {
+                return NotFound();
+            }
+
+            return machine;
+        }
+
         [HttpPost]
         public async Task<ActionResult<Machine>> PostMachine(Machine machine)
         {
@@ -29,6 +42,21 @@ namespace DynaPredictApi.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetMachines), new { id = machine.Id }, machine);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMachine(int id)
+        {
+            var machine = await _context.Machines.FindAsync(id);
+            if (machine == null)
+            {
+                return NotFound();
+            }
+
+            _context.Machines.Remove(machine);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
