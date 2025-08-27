@@ -3,6 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using DynaPredictApi.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -25,6 +32,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAllOrigins");
 
 // Mapeia todos os controllers para seus respectivos endpoints
 app.MapControllers();
