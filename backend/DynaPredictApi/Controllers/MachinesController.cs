@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using DynaPredictApi.Data;
 using DynaPredictApi.Models;
+using DynaPredictApi.Repositories;
 
 namespace DynaPredictApi.Controllers
 {
@@ -9,52 +8,49 @@ namespace DynaPredictApi.Controllers
     [ApiController]
     public class MachinesController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IMachinesRepository _repository;
 
-        public MachinesController(AppDbContext context)
+        public MachinesController(IMachinesRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Machine>>> GetMachines()
         {
-            return await _context.Machines.ToListAsync();
+            return Ok(await _repository.GetAllAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Machine>> GetMachine(int id)
         {
-            var machine = await _context.Machines.FindAsync(id);
+            var machine = await _repository.GetByIdAsync(id);
 
             if (machine == null)
             {
                 return NotFound();
             }
 
-            return machine;
+            return Ok(machine);
         }
 
         [HttpPost]
         public async Task<ActionResult<Machine>> PostMachine(Machine machine)
         {
-            _context.Machines.Add(machine);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetMachines), new { id = machine.Id }, machine);
+            await _repository.AddAsync(machine);
+            return CreatedAtAction(nameof(GetMachine), new { id = machine.Id }, machine);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMachine(int id)
         {
-            var machine = await _context.Machines.FindAsync(id);
-            if (machine == null)
+            var machineExists = await _repository.ExistsAsync(id);
+            if (!machineExists)
             {
                 return NotFound();
             }
 
-            _context.Machines.Remove(machine);
-            await _context.SaveChangesAsync();
+            await _repository.DeleteAsync(id);
 
             return NoContent();
         }
