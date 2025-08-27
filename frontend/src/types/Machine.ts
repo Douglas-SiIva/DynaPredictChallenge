@@ -5,3 +5,5 @@ export interface Machine {
   description: string;
   machineType: number;
 }
+
+export type MachineCreate = Omit<Machine, "id">;
