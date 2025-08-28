@@ -1,18 +1,39 @@
-import { useState } from "react";
-import type { MachineCreate } from "../../types/Machine";
+import { useState, useEffect } from "react";
+import type { Machine, MachineCreate } from "../../types/Machine";
 import React from "react";
 
 interface Props {
   onAddMachine: (machineData: MachineCreate) => Promise<boolean>;
+  onUpdateMachine: (machineData: Machine) => Promise<boolean>;
+  machineToEdit: Machine | null;
+  onCancelEdit: () => void;
 }
 
-const MachineForm = ({ onAddMachine }: Props) => {
+const MachineForm = ({ onAddMachine, onUpdateMachine, machineToEdit, onCancelEdit }: Props) => {
   const [formData, setFormData] = useState<MachineCreate>({
     name: "",
     serialNumber: "",
     description: "",
     machineType: 0,
   });
+
+  useEffect(() => {
+    if (machineToEdit) {
+      setFormData({
+        name: machineToEdit.name,
+        serialNumber: machineToEdit.serialNumber,
+        description: machineToEdit.description,
+        machineType: machineToEdit.machineType,
+      });
+    } else {
+      setFormData({
+        name: "",
+        serialNumber: "",
+        description: "",
+        machineType: 0,
+      });
+    }
+  }, [machineToEdit]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -26,20 +47,25 @@ const MachineForm = ({ onAddMachine }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const success = await onAddMachine(formData);
-    if (success) {
-      setFormData({
-        name: "",
-        serialNumber: "",
-        description: "",
-        machineType: 0,
+    let success = false;
+
+    if (machineToEdit) {
+      success = await onUpdateMachine({
+        ...formData,
+        id: machineToEdit.id,
       });
+    } else {
+      success = await onAddMachine(formData);
+    }
+
+    if (success) {
+      onCancelEdit();
     }
   };
 
   return (
     <div>
-      <h2>Adicionar Nova Máquina</h2>
+      <h2>{machineToEdit ? "Editar Máquina" : "Adicionar Nova Máquina"}</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">Nome da Máquina:</label>
@@ -74,7 +100,12 @@ const MachineForm = ({ onAddMachine }: Props) => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit">Adicionar Máquina</button>
+        <button type="submit">{machineToEdit ? "Salvar Edições" : "Adicionar Máquina"}</button>
+        {machineToEdit && (
+          <button type="button" onClick={onCancelEdit}>
+            Cancelar
+          </button>
+        )}
       </form>
     </div>
   );

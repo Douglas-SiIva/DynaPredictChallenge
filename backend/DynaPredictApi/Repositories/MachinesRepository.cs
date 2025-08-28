@@ -47,5 +47,11 @@ namespace DynaPredictApi.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task UpdateAsync(Machine machine)
+        {
+            _context.Entry(machine).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
     }
 }

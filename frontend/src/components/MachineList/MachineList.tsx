@@ -2,9 +2,11 @@ import type { Machine } from "../../types/Machine";
 
 interface Props {
   machines: Machine[];
+  onDeleteMachine: (id: number) => Promise<void>;
+  onEditMachine: (machine: Machine) => void;
 }
 
-const MachinesList = ({ machines }: Props) => {
+const MachinesList = ({ machines, onDeleteMachine, onEditMachine }: Props) => {
   return (
     <div>
       <h2>Lista de Máquinas</h2>
@@ -13,6 +15,8 @@ const MachinesList = ({ machines }: Props) => {
           {machines.map((machine) => (
             <li key={machine.id}>
               {machine.name} - {machine.serialNumber}
+              <button onClick={() => onDeleteMachine(machine.id)}>Excluir</button>
+              <button onClick={() => onEditMachine(machine)}>Editar</button>
             </li>
           ))}
         </ul>

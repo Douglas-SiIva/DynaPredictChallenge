@@ -9,5 +9,6 @@ namespace DynaPredictApi.Repositories
         Task<Machine> AddAsync(Machine machine);
         Task<bool> ExistsAsync(int id);
         Task<bool> DeleteAsync(int id);
+        Task UpdateAsync(Machine machine);
     }
 }

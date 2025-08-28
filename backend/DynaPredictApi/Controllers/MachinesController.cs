@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using DynaPredictApi.Models;
 using DynaPredictApi.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace DynaPredictApi.Controllers
 {
@@ -39,6 +40,27 @@ namespace DynaPredictApi.Controllers
         {
             await _repository.AddAsync(machine);
             return CreatedAtAction(nameof(GetMachine), new { id = machine.Id }, machine);
+        }
+        
+        // CORRIGIDO: Agora usa o repositório e o método `ExistsAsync`
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutMachine(int id, Machine machine)
+        {
+            if (id != machine.Id)
+            {
+                return BadRequest();
+            }
+            
+            var machineExists = await _repository.ExistsAsync(id);
+            if (!machineExists)
+            {
+                return NotFound();
+            }
+
+            // O repositório irá lidar com a lógica de atualização
+            await _repository.UpdateAsync(machine);
+            
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
