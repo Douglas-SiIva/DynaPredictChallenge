@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Machine, MachineCreate } from "../../types/Machine";
 import React from "react";
+import { Box, TextField, Button, Typography } from "@mui/material";
 
 interface Props {
   onAddMachine: (machineData: MachineCreate) => Promise<boolean>;
@@ -15,6 +16,11 @@ const MachineForm = ({ onAddMachine, onUpdateMachine, machineToEdit, onCancelEdi
     serialNumber: "",
     description: "",
     machineType: 0,
+  });
+
+  const [validationErrors, setValidationErrors] = useState({
+    name: "",
+    serialNumber: "",
   });
 
   useEffect(() => {
@@ -49,6 +55,21 @@ const MachineForm = ({ onAddMachine, onUpdateMachine, machineToEdit, onCancelEdi
     e.preventDefault();
     let success = false;
 
+    const newErrors = { name: "", serialNumber: "" };
+
+    if (!formData.name) {
+      newErrors.name = "O nome é obrigatório.";
+    }
+    if (!formData.serialNumber) {
+      newErrors.serialNumber = "O número de série é obrigatório.";
+    }
+
+    setValidationErrors(newErrors);
+
+    if (newErrors.name || newErrors.serialNumber) {
+      return;
+    }
+
     if (machineToEdit) {
       success = await onUpdateMachine({
         ...formData,
@@ -64,50 +85,63 @@ const MachineForm = ({ onAddMachine, onUpdateMachine, machineToEdit, onCancelEdi
   };
 
   return (
-    <div>
-      <h2>{machineToEdit ? "Editar Máquina" : "Adicionar Nova Máquina"}</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Nome da Máquina:</label>
-          <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} />
-        </div>
-        <div>
-          <label htmlFor="serialNumber">Número de Série:</label>
-          <input
-            type="text"
-            id="serialNumber"
-            name="serialNumber"
-            value={formData.serialNumber}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="description">Descrição:</label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="machineType">Tipo de Máquina:</label>
-          <input
-            type="number"
-            id="machineType"
-            name="machineType"
-            value={formData.machineType}
-            onChange={handleChange}
-          />
-        </div>
-        <button type="submit">{machineToEdit ? "Salvar Edições" : "Adicionar Máquina"}</button>
+    <Box sx={{ p: 3, mb: 3, border: "1px solid #ccc", borderRadius: "8px" }}>
+      <Typography variant="h5" component="h2" gutterBottom>
+        {machineToEdit ? "Editar Máquina" : "Adicionar Nova Máquina"}
+      </Typography>
+
+      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+        <TextField
+          fullWidth
+          label="Nome da Máquina"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          error={!!validationErrors.name}
+          helperText={validationErrors.name}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          fullWidth
+          label="Número de Série"
+          name="serialNumber"
+          value={formData.serialNumber}
+          onChange={handleChange}
+          error={!!validationErrors.serialNumber}
+          helperText={validationErrors.serialNumber}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          fullWidth
+          label="Descrição"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          multiline
+          rows={4}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          fullWidth
+          label="Tipo de Máquina"
+          name="machineType"
+          type="number"
+          value={formData.machineType}
+          onChange={handleChange}
+          sx={{ mb: 2 }}
+        />
+
+        <Button type="submit" variant="contained" color="primary" sx={{ mr: 1 }}>
+          {machineToEdit ? "Salvar Edições" : "Adicionar Máquina"}
+        </Button>
+
         {machineToEdit && (
-          <button type="button" onClick={onCancelEdit}>
+          <Button type="button" onClick={onCancelEdit} variant="contained" color="inherit">
             Cancelar
-          </button>
+          </Button>
         )}
-      </form>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

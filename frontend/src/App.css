@@ -1,0 +1,125 @@
+body {
+    font-family: arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.app-container {
+    width: 80%;
+    max-width: 800px;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #555;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.machine-form div {
+    margin-bottom: 15px;
+}
+
+.machine-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.machine-form input,
+.machine-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.machine-form input:focus,
+.machine-form textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.machine-form button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.machine-form button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.machine-form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.machine-form button[type="button"] {
+    background-color: #6c757d;
+    color: #fff;
+    margin-left: 10px;
+}
+
+.machine-form button[type="button"]:hover {
+    background-color: #5a6268;
+}
+
+.machines-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.machines-list li {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.machines-list li:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.machines-list li button {
+  margin-left: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.machines-list .edit-button {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+.machines-list .delete-button {
+  background-color: #dc3545;
+  color: #fff;
+}

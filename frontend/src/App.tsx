@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import MachineList from "./components/MachineList/MachineList";
 import MachineForm from "./components/MachineForm/MachineForm";
 import type { Machine, MachineCreate } from "./types/Machine";
+import { Container, CssBaseline } from "@mui/material";
+import Header from "./components/Header/Header";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MachineDetails from "./components/MachineDetails/MachineDetails";
 
 function App() {
   const [machines, setMachines] = useState<Machine[]>([]);
@@ -52,11 +56,14 @@ function App() {
       if (response.ok) {
         console.log(`Máquina com ID ${machineId} excluída com sucesso!`);
         fetchMachines();
+        return true;
       } else {
         console.error("Erro ao excluir máquina:", response.statusText);
+        return false;
       }
     } catch (error) {
       console.error("Houve um erro na requisição:", error);
+      return false;
     }
   };
 
@@ -96,20 +103,38 @@ function App() {
   }, []);
 
   return (
-    <>
-      <h1>Gerenciamento de Máquinas</h1>
-      <MachineForm
-        onAddMachine={handleAddMachine}
-        onUpdateMachine={handleUpdateMachine}
-        machineToEdit={machineToEdit}
-        onCancelEdit={handleCancelEdit}
-      />
-      <MachineList
-        machines={machines}
-        onDeleteMachine={handleDeleteMachine}
-        onEditMachine={handleEditMachine}
-      />
-    </>
+    <BrowserRouter>
+      <CssBaseline />
+      <Header />
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <MachineList
+                machines={machines}
+                onDeleteMachine={handleDeleteMachine}
+                onEditMachine={handleEditMachine}
+              />
+            }
+          />
+
+          <Route
+            path="/nova-maquina"
+            element={
+              <MachineForm
+                onAddMachine={handleAddMachine}
+                onUpdateMachine={handleUpdateMachine}
+                machineToEdit={machineToEdit}
+                onCancelEdit={handleCancelEdit}
+              />
+            }
+          />
+
+          <Route path="/maquina/:id" element={<MachineDetails />} />
+        </Routes>
+      </Container>
+    </BrowserRouter>
   );
 }
 
